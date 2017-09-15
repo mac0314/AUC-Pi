@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head.ejs %>
+<link rel="stylesheet" href="/css/dropdown-button.css">
+
+
+</head>
+<body>
+
+
+  <div class="photo mobile">
+    <div class= "photo-header">
+      <a href="<%=backUrl%>">
+        <div class="back-icon close-icon">
+          <img src="/images/Close.svg" alt="">
+        </div>
+      </a>
+      <div class="dropdown-icon">
+        <img onclick="myFunction()" class="dropbtn" src="/images/dropdown.svg" alt="">
+        <div id="myDropdown" class="dropdown-content">
+          <ul>
+            <% if(ownerCheck === true){ %>
+              <li>
+                <form action="<%=deleteUrl%>" method="post">
+                  <input class="dropdown-button" type="submit" value="삭제"/>
+                </form>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+  </div>
+
+  <div class="photo-photo">
+    <a href="/user/photo/<%=postingId%>/next/<%=routingName%>/<%=topicName%>">
+    <div class="previous-button">
+        <img src="/images/previous-button2.svg" alt="">
+    </div>
+    </a>
+    <a href="/user/photo/<%=postingId%>/prev/<%=routingName%>/<%=topicName%>">
+    <div class="next-button">
+        <img  src="/images/next-button2.svg" alt="">
+    </div>
+    </a>
+    <div class="photo-square">
+
+    </div>
+  </div>
+
+  <div class="photo-content">
+    <div class="photo-createtime">
+
+    </div>
+    <div class="photo-topicname">
+
+    </div>
+    <div class="photo-topiccontent">
+
+    </div>
+
+    <div class="photo-reply">
+      <ul class="reply-ul">
+
+      </ul>
+    </div>
+  </div>
+
+  <div class="input-reply" id="input-reply" >
+    <input id="comment-text" class="reply-text" name="content" type="text" placeholder="댓글 달기.."/>
+    <div id="comment-submit" class="reply-button">
+      <img src="/images/reply-before.svg" alt="">
+    </div>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+  /* When the user clicks on the button,
+  toggle between hiding and showing the dropdown content */
+  function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+  }
+
+  $(document).ready(function(){
+
+
+    var postingObject = JSON.parse(`<%-postingJson%>`);
+    //console.log(postingObject);
+
+    $(".photo-square").append('<img class="postingImage" id="postingImage" src="' + postingObject.imagePath + '">');
+    $(".photo-createtime").append(postingObject.createTime);
+    $(".photo-topicname").append(postingObject.topicName);
+    $(".photo-topiccontent").append(postingObject.content);
+
+    if(postingObject.commentCheck){
+      var commentObject = JSON.parse(`<%-commentJson%>`);
+
+      if(commentObject.commentList){
+        for(var i = 0; i < commentObject.commentList.length; i++){
+          if(commentObject.commentList[i].ownCheck){
+            $(".reply-ul").append("<li>" + commentObject.commentList[i].content + "<img onclick='clickDelete(this.id)' id='re-" + commentObject.commentList[i].id + "' class='reply-delete' src='/images/Close.svg'></li>");
+          }else{
+            $(".reply-ul").append("<li>> " + commentObject.commentList[i].content + "</li>");
+          }
+        }
+      }
+
+    }else{
+
+      document.getElementById('input-reply').style.visibility = 'hidden';
+    }
+  });
+
+
+
+$( ".photo-square" ).click(function() {
+  if($(".previous-button,.next-button").hasClass('move')){
+    $(".previous-button,.next-button").removeClass('move');
+  } else {
+    $(".previous-button,.next-button").addClass('move');
+  }
+});
+$(document).ready(function(){
+    $('.reply-button').prop('disabled', true);
+
+})
+
+$('.reply-text').keyup(function() {
+  if($('.reply-text').val().length > 0 ){
+    $('.reply-button').prop('disabled', false);
+    $('.reply-button >img ').attr("src", "/images/reply-after.svg");
+    $('.reply-button').addClass('active');
+
+  } else {
+    $('.reply-button').prop('disabled', true);
+    $('.reply-button >img ').attr("src", "/images/reply-before.svg");
+    $('.reply-button').removeClass('active');
+
+  }
+});
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+
+$('.reply-button').click(function(){
+  var idx = $(this).parent().parent().index();
+  var textLine = $(".reply-text").val();
+  var dataObject = new Object({});
+  dataObject.content = textLine;
+
+  var data = JSON.stringify(dataObject);
+  //console.log(data);
+  $.ajax({
+      url:'/user/photo/<%=postingId%>/comment',
+      type:'POST',
+      contentType: "application/json; charset=utf-8",
+      dataType   : "json",
+      data:data,
+      async:true,
+      cache:false,
+      processData:false,
+      success: function (response){
+          //console.log(response);
+          if(response.comment){
+            $(".reply-text").val('');
+            $(".reply-ul").append("<li>" + response.content + "<img onclick='clickDelete(this.id)' id='re-" + response.id + "' class='reply-delete' src='/images/Close.svg'></li>")
+          }else{
+            alert("내용을 입력해주세요");
+          }
+        }
+  });
+});
+
+function clickDelete(id){
+  var idArray = id.split("-");
+
+  $.ajax({
+      url:'/user/photo/delete/comment/' + idArray[1],
+      type:'POST',
+      contentType: "application/json; charset=utf-8",
+      dataType   : "json",
+      data:null,
+      async:true,
+      cache:false,
+      processData:false,
+      success: function (response){
+          //console.log(response);
+
+          document.getElementById(id).parentNode.remove();
+      }
+  });
+
+}
+</script>
+
+</body>
+</html>

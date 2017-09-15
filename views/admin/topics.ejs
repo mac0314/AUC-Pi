@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ../partial/head.ejs %>
+  </head>
+
+  <body>
+     <div class="admin-topic mobile">
+      <div class="header">
+        <% include ../partial/title-image.ejs %>
+
+      <div class="navbar">
+          <ul class="nav-ul">
+            <li ><a class="navbar-link" href="#addtopic">토픽 추가</a></li>
+            <li><a class="navbar-link" href="#deletetopic">토픽 제거</a></li>
+            <li ><a class="navbar-link" href="/admin/main">Back</a></li>
+          </ul>
+      </div>
+      </div>
+    <div class="topic signinID">
+      <div class="container">
+        <div id="addtopic">
+          <h3>토픽 추가</h3>
+          <form action="/admin/topics" method="post">
+            <div class="row">
+              <div class="six columns">
+                <label>토픽 이름</label>
+                <input class="u-full-width" type="text" placeholder="Pipette" name="topicName"/><br/>
+              </div>
+            </div>
+            <div class="row">
+              <div class="six columns">
+                <label>설명</label>
+                <textarea class="u-full-width" placeholder="description" name="topicDescription" id="topicDescription"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="six columns">
+                <select name="publicCheck">
+                  <option value="true">공개</option>
+                  <option value="false" selected="selected">비공개</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <input class="button-primary" type="submit" value="Submit"/>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="container">
+        <div id="deletetopic">
+          <h3>토픽 제거</h3>
+          <% for (var i = 0; i < topics.length; i++){ %>
+            <div class="row" style="text-align:center">
+                <h4 class="topic-heading"><a href="/user/topics/<%-topics[i].name%>"> <%- topics[i].name %> </a></h4>
+            </div>
+          <% } %>
+          <div>
+            <form action="/admin/topics/delete" method="post">
+              <div class="row">
+                <div class="six columns">
+                  <label>토픽 이름</label>
+                  <input class="u-full-width" type="text" placeholder="Pipette" name="topicName"/><br/>
+                </div>
+              </div>
+              <div>
+                <input class="button-primary" type="submit" value="Submit"/>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

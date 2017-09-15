@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <% include ../partial/head.ejs %>
+</head>
+<body>
+  <div class="topic mobile">
+    <div class="header" style="position:relative">
+      <a href="/user/topics/list">
+        <div class="back-icon">
+          <img src="/images/back-icon.svg" alt="">
+        </div>
+      </a>
+      <% include ../partial/title-image.ejs %>
+      <a href="/user/posting/<%- topic.name %>">
+        <div class="posting-icon">
+          <img src="/images/pipette.svg" alt="">
+        </div>
+      </a>
+    </div>
+
+    <div class="topic-keyword">
+      <div class="topic-name">
+        <h4 style="font-weight:bold"># <%- topic.name %></h4>
+      </div>
+      <div class="topic-description">
+        <%- topic.description %>
+      </div>
+    </div>
+    <div class="topic-body">
+      <div class="content-imgs" id="content-imgs">
+      </div>
+      <div style="height:20px;">
+      </div>
+    </div>
+    <div class="footer" id="main-fot" style="background-color: #353840 !important;">
+      <% include ../partial/footer.ejs %>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+  var count = 0;
+  var requestFlag = false;
+
+  $(window).scroll(function() {
+    if ($(window).scrollTop() === $(document).height() - $(window).height()) {
+      if(requestFlag){
+        requestFlag = false;
+        loadData();
+      }
+
+    }
+  });
+
+
+  $(document).ready(function() {
+    var postingObject = JSON.parse(`<%-postingJson%>`);
+    var postingList = postingObject.postingObject;
+    //console.log(postingList);
+
+    if( postingList === null){
+      console.log("postingList null");
+    }else{
+      for(var idx = 0; idx < <%-postingNum%>; idx++){
+        count++;
+
+        if(postingList[idx].commentCheck){
+          $("#content-imgs").append('<div class="square" id="square"><div class="reply-bubble"></div><div class="content" id="content"><a href="/user/photo/' + postingList[idx].id + '/current/topics/<%-topic.name%>"><img src="' + postingList[idx].thumbnailPath + '"></a></div></div>');
+        }else{
+          $("#content-imgs").append('<div class="square" id="square"><div class="content" id="content"><a href="/user/photo/' + postingList[idx].id + '/current/topics/<%-topic.name%>"><img src="' + postingList[idx].thumbnailPath + '"></a></div></div>');
+        }
+
+        $('img').load(function(){
+          var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
+          $(this).addClass(imgClass);
+        });
+      }
+
+    }
+    requestFlag = true;
+  });
+
+  function loadData(){
+    const idxNum = 9;
+
+    $.ajax({
+      type: "GET",
+      url: "/user/topics/<%=topic.name%>/" + count + "/" + idxNum,
+      dataType: "json",
+      success: function (response) {
+        console.log(response);
+        var postingList = response.postingObject;
+
+        if(postingList){
+          for(var idx = 0; idx < postingList.length; idx++){
+            count++;
+
+            if(postingList[idx].commentCheck){
+              $("#content-imgs").append('<div class="square" id="square"><div class="reply-bubble"></div><div class="content" id="content"><a href="/user/photo/' + postingList[idx].id + '/current/topics/<%-topic.name%>"><img src="' + postingList[idx].thumbnailPath + '"></a></div></div>');
+            }else{
+              $("#content-imgs").append('<div class="square" id="square"><div class="content" id="content"><a href="/user/photo/' + postingList[idx].id + '/current/topics/<%-topic.name%>"><img src="' + postingList[idx].thumbnailPath + '"></a></div></div>');
+            }
+
+            $('img').load(function(){
+              var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
+              $(this).addClass(imgClass);
+            });
+          }
+          requestFlag = true;
+        }else{
+          requestFlag = false;
+        }
+
+      }
+    });
+  }
+
+  </script>
+</body>
+</html>

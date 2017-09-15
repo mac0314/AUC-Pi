@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head.ejs %>
+</head>
+<body>
+  <div class="repository mobile">
+    <div class="header">
+      <% include ../partial/title-image.ejs %>
+      <% include ../partial/navbar.ejs %>
+    </div>
+    <div class="repo-profile">
+      <div style="font-size:20px; padding: 16px 0 16px 0; font-weight:bold;">피펫, 일상을 추출하다</div>
+      <div><span class="topic-email"><%=id%></span>님의 일상</div>
+      <div><span class="total-num"><%=topicLength%></span>개의 키워드 중 <span class="join-num"><%=topicNum%></span>개에 참여중입니다</div>
+    </div>
+    <div class="repo-content">
+      <div class="listing-bar">
+        <a href="/user/repository?tab=archive"><div class="listing-record">기록</div></a>
+        <a href="/user/repository?tab=communication"><div class="listing-expression">소통</div></a>
+      </div>
+
+      <div class="content-imgs" id="content-imgs">
+
+      </div>
+      <div style="height:20px;">
+
+      </div>
+    </div>
+    <div class="footer" id="main-fot" style="background-color: #353840 !important;">
+      <% include ../partial/footer.ejs %>
+    </div>
+
+  </div>
+
+
+  <script type="text/javascript">
+  var count = 0;
+  var requestFlag = false;
+
+  $(window).scroll(function() {
+    if ($(window).scrollTop() === $(document).height() - $(window).height()) {
+      //console.log("scroll");
+
+      if(requestFlag){
+        requestFlag = false;
+        loadData();
+      }
+    }
+  });
+
+
+
+  $(document).ready(function() {
+    var loadObject = JSON.parse(`<%-loadJson%>`);
+    var postingObject = loadObject.postingObject;
+    var commentCheck = <%= commentCheck%>
+    console.log(postingObject);
+      if (commentCheck) {
+        $('.listing-record').css('color','#d8d8d8');
+        $('.listing-record').css('font-weight','normal');
+        $('.listing-expression').css('color','#000');
+        $('.listing-expression').css('font-weight','bold');
+
+      } else{
+        $('.listing-record').css('color','#000');
+        $('.listing-record').css('font-weight','bold');
+        $('.listing-expression').css('color','#d8d8d8');
+        $('.listing-expression').css('font-weight','normal');
+      }
+
+
+    if( postingObject.length === 0){
+        if (commentCheck){
+          console.log("소통해요");
+          $("#content-imgs").append('<div class="repo-empty"><div>댓글 허용된 게시물로 소통해보세요<br/><br /> <a href="/user/main">오늘의 키워드 보러가기</a></div></div>');
+        } else {
+          console.log("기록해요");
+          $("#content-imgs").append('<div class="repo-empty"><div>첫번째 사진을 기다리고 있습니다<br/> <br/> <a href="/user/main">오늘의 키워드 보러가기</a></div></div>');
+        }
+        requestFlag = false;
+    }else{
+      for(var idx = 0; idx < <%= postingNum %>; idx++){
+        //console.log("image load");
+        count++;
+
+        var thumbnailPath = postingObject[idx].thumbnailPath;
+
+        var nameArray = thumbnailPath.split('/s/');
+        var topicName = nameArray[1].split('/')[0];
+
+        //console.log(topicName);
+        //console.log(postingObject[idx].commentCheck);
+
+        $("#content-imgs").append('<div class="square" id="square"><div class="repo-photo-topic">#' + topicName + '</div><div class="content" id="content"><a href="/user/photo/' + postingObject[idx].id + '/current/repository"><img src="' + postingObject[idx].thumbnailPath + '"></a></div></div>');
+        $('img').load(function(){
+          var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
+          $(this).addClass(imgClass);
+        });
+      }
+
+    }
+
+    requestFlag = true;
+  });
+
+
+  function loadData(){
+    var commentCheck = <%= commentCheck%>;
+    const idxNum = 9;
+
+    //console.log(commentCheck);
+
+    var tab = "";
+    if(commentCheck){
+      tab = "communication";
+    }else{
+      tab = "archive";
+    }
+
+    $.ajax({
+      type: "GET",
+      url: "/user/repository/" + count + "/" + idxNum + "?tab=" + tab,
+      dataType: "json",
+      data: null,
+      success: function (response) {
+        console.log(response);
+        if(response.load){
+          var postingObject = response.postingObject;
+          console.log("in");
+          for(var i = 0; i < postingObject.length; i++){
+            count++;
+
+            var thumbnailPath = postingObject[i].thumbnailPath;
+            var nameArray = thumbnailPath.split('/s/');
+            var topicName = nameArray[1].split('/')[0];
+
+            $("#content-imgs").append('<div class="square" id="square"><div class="repo-photo-topic">#' + topicName + '</div><div class="content" id="content"><a href="/user/photo/' + postingObject[i].id + '/current/repository"><img src="' + postingObject[i].thumbnailPath + '"></a></div></div>');
+            $('img').load(function(){
+              var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
+              $(this).addClass(imgClass);
+            });
+          }
+          requestFlag = true;
+        }else{
+          requestFlag = false;
+        }
+
+      }
+    });
+  }
+
+  </script>
+</body>
+</html>

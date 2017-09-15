@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <% include ../partial/head.ejs %>
+</head>
+<body>
+  <div class="topics mobile">
+    <div class="header">
+      <% include ../partial/title-image.ejs %>
+      <% include ../partial/navbar.ejs %>
+    </div>
+    <div class="topic-list">
+      <ul class="topic-ulist">
+      </ul>
+    </div>
+
+    <div class="footer" id="main-fot" style="background-color: #353840 !important;">
+      <% include ../partial/footer.ejs %>
+    </div>
+  </div>
+
+
+
+  <script>
+  var count = 0;
+  var requestFlag = false;
+
+  $(window).scroll(function() {
+    if ($(window).scrollTop() > $(document).height() - $(window).height() - 200) {
+      if(requestFlag){
+        requestFlag = false;
+        loadData();
+      }
+    }
+  });
+
+  $(document).ready(function() {
+
+    <% if( topics.length === 0){ %>
+        $("#topic-ulist").append('');
+    <% }else{ %>
+      <% for(var i = 0; i < topics.length; i++){ %>
+        <% if(topics[i].upload){ %>
+          $(".topic-ulist").append('<li><a href="/user/topics/<%=topics[i].name%>"><div class="topic-content upload topicno' + (<%=topicLength%>-count) + '"><div class="topic-name">#' + (<%=topicLength%>-count) + ' <%=topics[i].name%></div><div class="topic-date"><%=topics[i].time%></div></div></a></li>');
+          count++;
+        <% }else{ %>
+          $(".topic-ulist").append('<li><a href="/user/topics/<%=topics[i].name%>"><div class="topic-content topicno' + (<%=topicLength%>-count) + '"><div class="topic-name">#' + (<%=topicLength%>-count) + ' <%=topics[i].name%></div><div class="topic-date"><%=topics[i].time%></div></div></a></li>');
+          count++;
+        <% } %>
+      <% } %>
+
+    <% } %>
+    requestFlag = true;
+  });
+
+
+  function loadData(){
+    const idxNum = 9;
+
+    $.ajax({
+      type: "GET",
+      url: "/user/topics/list/" + count + "/" + idxNum,
+      dataType: "json",
+      success: function (response) {
+        console.log(response);
+        var topics = response.topics;
+        var topicLength = response.topicLength;
+
+        if(topics.length > 0){
+          for(var i = 0; i < topics.length; i++){
+            if(topics[i].upload){
+              $(".topic-ulist").append('<li><a href="/user/topics/' + topics[i].name + '"><div class="topic-content upload topicno' + (topicLength - count) + '"><div class="topic-name">#'+ (topicLength - count) + ' '  + topics[i].name + '</div><div class="topic-date">' + topics[i].time + '</div></div></a></li>');
+            }else{
+              $(".topic-ulist").append('<li><a href="/user/topics/' + topics[i].name + '"><div class="topic-content topicno' + (topicLength - count) + '"><div class="topic-name">#'+ (topicLength - count) + ' '  + topics[i].name + '</div><div class="topic-date">' + topics[i].time + '</div></div></a></li>');
+            }
+
+            count++;
+          }
+
+          requestFlag = true;
+        }else {
+          requestFlag = false;
+        }
+
+      }
+    });
+  }
+  </script>
+
+</body>
+</html>

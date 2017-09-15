@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head-alert.ejs %>
+</head>
+<body>
+  <script>
+    swal({
+      html: "게시글이 없습니다.",
+      type: "error",
+      showCancelButton: false,
+      showCloseButton: true,
+      confirmButtonColor: '#33C3F0',
+      confirmButtonText: '<b>확인</b>',
+      confirmButtonClass: 'btn btn-success',
+      reverseButtons: true ,
+      focusCancel: false
+    }).then(function () {
+      setTimeout( function (){
+          window.history.back(-1);
+      }, 10);
+    });
+  </script>
+</body>
+</html>

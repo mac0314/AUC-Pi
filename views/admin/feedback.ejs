@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <% include ../partial/head.ejs %>
+</head>
+<body>
+  <div class="topic mobile">
+  <div class="header">
+    <% include ../partial/title-image.ejs %>
+    <div class="navbar">
+        <ul class="nav-ul">
+            <li><a class="nav-topic" href="/admin/feedback">피드백</a></li>
+            <li><a class="nav-today" href="#">처리</a></li>
+        </ul>
+    </div>
+  </div>
+
+  <div class="topic-list">
+    <div class="feedback-list">
+
+    </div>
+  </div>
+
+  </div>
+  <script type="text/javascript">
+    var feedbackObject = JSON.parse(`<%-feedbackJson%>`);
+    for(var i=0; i<feedbackObject.length; i++){
+      $(".feedback-list").append('<ul><div>' + feedbackObject[i].id  + '</div><div>' + feedbackObject[i].sender + '</div><div>' + feedbackObject[i].email + '</div><div>' + feedbackObject[i].content + '</div></ul>');
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+
+    <% include ../partial/head.ejs %>
+  </head>
+  <body>
+    <div class="container">
+      <div class="navbar-spacer"></div>
+      <nav class="navbar">
+        <div class="container">
+          <ul class="navbar-list">
+            <li class="navbar-item"><a class="navbar-link" href="#update">update</a></li>
+            <li class="navbar-item"><a class="navbar-link" href="/user/signin">Back</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+      <section class="header">
+        <h2 class="title">Update user data</h2>
+      </section>
+      <h3>Fill out this form</h3>
+    </div>
+
+    <div class="update" id="update">
+      <div class="container">
+        <!--<textarea rows="300" cols="300" name="contents"></textarea>-->
+        <form action="/user/update" method="post">
+          <div class="form-group">
+              <label>E-mail</label>
+              <input type="text" class="form-control" placeholder="test@mailbox.com" name="email">
+          </div>
+          <div class="form-group">
+              <label>Password</label>
+              <input type="password" class="form-control" placeholder="password" name="password">
+          </div>
+
+          <button type="submit" class="btn btn-warning btn-lg">update</button>
+      </form>
+    </div>
+  </div>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head-alert.ejs %>
+</head>
+<body>
+
+  <script>
+    swal({
+      html: "업로드에 실패하였습니다. 다시 시도해주세요.",
+      type: "error",
+      showCancelButton: true,
+      showCloseButton: true,
+      cancelButtonColor: '#d8d8d8',
+      confirmButtonColor: '#33C3F0',
+      confirmButtonText: '<b>재시도</b>',
+      cancelButtonText: '취소',
+      confirmButtonClass: 'btn btn-success',
+      cancelButtonClass: 'btn btn-danger',
+      reverseButtons: true ,
+      focusCancel: false
+    }).then(function () {
+      setTimeout( function (){
+          window.location.href = "/user/posting/<%=topicEncoded%>";
+      }, 10);
+    }, function (dismiss) {
+      setTimeout( function (){
+          window.location.href = "/user/topics";
+      }, 10);
+    })
+  </script>
+</body>
+</html>

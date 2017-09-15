@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+  <% include ../partial/head.ejs %>
+  </head>
+<!--
+  <script>
+    var ref_t = setInterval(function (){
+      jQuery('#list').load('http://internetbat.com/{$mid}#list_load').fadeIn('slow');, 6000);
+  </script>
+-->
+  <body>
+    <div class="container">
+      <div class="navbar-spacer"></div>
+      <nav class="navbar">
+        <div class="container">
+          <ul class="navbar-list">
+            <li class="navbar-item"><a class="navbar-link" href="#join">join</a></li>
+            <li class="navbar-item"><a class="navbar-link" href="/user/signin">Back</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+      <section class="header">
+        <h2 class="title">Sign-up <%=title%></h2>
+      </section>
+      <h3>Fill out this form</h3>
+    </div>
+
+    <div class="join" id="join">
+      <div class="container">
+        <form action="/user/signup" id="form-signup" method="post">
+          <div class="row">
+            <div class="seven columns">
+              <input class="u-full-width" type="email" placeholder="이메일을 입력해주세요." name="email"/><br/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="seven columns signup-email feedback">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="seven columns">
+              <input id="signup-password" class="u-full-width" type="password" placeholder="비밀번호" name="password"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="seven columns signup-password feedback">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="seven columns">
+              <input id="signup-confirm" class="u-full-width" type="password" placeholder="비밀번호 확인" name="confirm"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="seven columns signup-confirm feedback">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="seven columns">
+              <div class="signup-button u-full-width button">
+                회원가입
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="seven columns">
+              <div class="signin-rule">
+                <span>회원가입</span>을 누르시면 <a href="#">이용약관 및 개인정보 취급방침</a>에 <span>동의</span>하신것으로 간주합니다.
+              </div>
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+      $('.signup-button').prop('disabled', true);
+      $('.signup-button').addClass('disable-button');
+      $("#signup-password").bind('input',function(){setTimeout (cmp_pass2(),500)});   // input의 값이 변경되면 0.5초 딜레이 후에 cmp_pass실행
+      $("#signup-confirm").bind('input',function(){setTimeout (cmp_pass(),500)});
+
+    function cmp_pass() {
+       $('.signup-confirm').empty();
+       if($("#signup-confirm").val() == $("#signup-password").val()) {
+            if($("#signup-password").val().length >= 6){
+              $('.signup-button').prop('disabled', false);
+              $('.signup-button').text('회원가입 후 시작하기');
+              $('.signup-button').addClass('button-primary');
+              $('.signup-button').removeClass("disable-button");
+             }
+            else{
+              $('.signup-button').prop('disabled', true);;
+            }
+         }
+       else{
+          $('.signup-button').prop('disabled', true);
+          $(".signup-confirm").append("입력된 비밀번호가 다릅니다");
+         }
+      }
+      function cmp_pass2() {
+         $('.signup-password').empty();
+
+          if($("#signup-password").val().length >= 6){
+              }
+          else{
+            $('.signup-button').prop('disabled', true);
+            $(".signup-password").append("비밀번호가 너무 짧습니다. 6글자 이상으로 해주세요.");
+
+          }
+        }
+
+
+     });
+
+     jQuery.fn.serializeObject = function() {
+        var obj = null;
+        try {
+            if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
+                var arr = this.serializeArray();
+                if (arr) {
+                    obj = {};
+                    jQuery.each(arr, function() {
+                        obj[this.name] = this.value;
+                    });
+                }//if ( arr ) {
+            }
+        } catch (e) {
+            alert(e.message);
+        } finally {
+        }
+
+        return obj;
+    };
+
+    $('.signup-button').click(function(){
+      $(".signup-email").empty();
+      var idx = $(this).parent().parent().parent().index();
+      var frm = document.getElementById('form-signup');
+      frm.method = 'POST';
+      frm.enctype = "application/json; charset=utf-8";
+      var userData = JSON.stringify($("#form-signup").serializeObject());
+      //console.log(userData);
+      $.ajax({
+          url:'/user/signup',
+          contentType: "application/json; charset=utf-8",
+          dataType   : "json",
+          type:'POST',
+          data:userData,
+          async:true,
+          cache:false,
+          processData:false,
+          success: function (response){
+            //console.log("response :", response);
+
+            if(response.atCheck){
+              if(response.error){
+                // 회원가입 에러
+                $(".signup-email").append('회원가입 오류입니다. 다시 시도해주세요.');
+              }else{
+                if(response.duplicate){
+                  // 회원 아이디 중복
+                  $(".signup-email").append('아이디 중복입니다. 다시 시도해주세요.');
+                }else{
+                  if(response.signup){
+                    if(response.signin){
+                      // 회원가입 성공, 로그인 완료
+                      var url = "/user/main";
+                      window.location.href = url;
+                    }else{
+                      // 회원가입 성공, 로그인 실패
+                      $(".signup-email").append('회원가입에 성공하였습니다. 로그인해주세요.');
+                    }
+                  }else{
+                    // 회원가입 에러
+                    $(".signup-email").append('회원가입 에러입니다. 다시 시도해주세요.');
+                  }
+                }
+              }
+            }else{
+              $(".signup-email").append('잘못된 아이디 형식입니다. 아이디에 @을 포함해주세요.');
+            }
+
+
+          }
+      });
+    });
+    </script>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  </body>
+</html>

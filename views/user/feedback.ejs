@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <% include ../partial/head.ejs %>
+</head>
+<body>
+  <div class="header mobile">
+    <% include ../partial/title-image.ejs %>
+  </div>
+  <div class="user-feedback mobile" style="padding:40px 0 0 0;">
+    <div class="container" style="min-height:80vh;">
+      <h3 class="hero-heading">문의하기</h3>
+      <form action="/user/feedback" method="post">
+        <div class="row">
+          <div class="six columns">
+            <input class="u-full-width" type="text" placeholder="보내는 이" id="sender" name="sender">
+          </div>
+          <div class="six columns">
+            <input class="u-full-width" type="email" placeholder="회신 메일" id="senderEmail" name="senderEmail">
+          </div>
+        </div>
+        <textarea class="u-full-width" placeholder="피펫에 대해 자유롭게 말씀해주세요." id="content" name="content"></textarea>
+        </label>
+        <input class="button" type="submit" value="전송">
+      </form>
+    </div>
+    <div class="footer" id="main-fot" style="background-color: #353840 !important;">
+      <% include ../partial/footer.ejs %>
+    </div>
+  </div>
+</body>
+</html>

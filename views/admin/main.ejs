@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head.ejs %>
+</head>
+<body>
+
+  <div class="main mobile">
+    <div class="header">
+      <% include ../partial/title-image.ejs %>
+      <% include ../partial/navbar.ejs %>
+    </div>
+
+    <div class="keyword">
+      <div class="keyword-body">
+        <div>
+          <h4 class="keyword-heading"># <%- topic.name %></h4>
+        </div>
+        <div class="keyword-content">
+          <%- topic.description %>
+        </div>
+        <div class="anchor-icon">
+          <img src="/images/anchor-icon.png" alt="">
+        </div>
+      </div>
+      <div class="button">
+        <a href="/admin/posting">
+          <div class="upload-msg">
+            포스팅을 관리해주세요
+          </div>
+        </a>
+      </div>
+      <div class="button">
+        <a href="/user/posting/<%- topicEncoded %>">
+          <div class="upload-msg">
+            사진을 올려주세요
+          </div>
+        </a>
+      </div>
+      <div class="button">
+        <a href="/admin/topics">
+          <div class="upload-msg">
+            토픽을 등록해주세요
+          </div>
+        </a>
+      </div>
+      <div class="button">
+        <a href="/admin/feedback">
+          <div class="upload-msg">
+            유저의 의견을 확인해주세요
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="footer" id="main-fot">
+      <% include ../partial/footer.ejs %>
+    </div>
+  </div>
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title><%=title%></title>
+
+  <!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/favicon.ico">
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99226213-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</head>
+<body>
+  로그인에 성공하였습니다. 잠시만 기다려주세요.
+  <script>
+    var data = JSON.stringify(<%-userJson%>);
+
+    //console.log(data);
+    $(document).ready(function(){
+      //console.log("ok");
+      $.ajax({
+          url:'/user/signin/kakao',
+          contentType: "application/json; charset=utf-8",
+          dataType   : "json",
+          type:'POST',
+          data:data,
+          async:true,
+          cache:false,
+          processData:false,
+          success: function (response){
+            //console.log("response :", response);
+
+            if(response.error){
+              // 로그인 에러
+              $(".signup-email").append('로그인 오류입니다. 다시 시도해주세요.');
+            }else{
+              if(response.signin){
+                // 로그인 성공
+                var url = "/user/main";
+                window.location.href = url;
+              }else{
+                // 로그인 실패
+                $(".signup-email").append('로그인에 성공하였습니다.');
+              }
+            }
+
+
+          }
+      });
+
+    });
+
+    //window.location.href = "/user/main";
+  </script>
+</body>
+</html>

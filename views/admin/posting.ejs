@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head.ejs %>
+</head>
+<body>
+  <div class="topic mobile">
+    <div class="header">
+      <div class="back-icon">
+        <img src="/images/back-icon.svg" alt="">
+      </div>
+      <% include ../partial/title-image.ejs %>
+      <form action="/admin/photo/delete" method="post">
+        <input class="u-half-width" type="text" placeholder="게시글 번호" name="postingId"/>
+        <input class="button-primary" type="submit" value="제거"/>
+      </form>
+    </div>
+
+  <div class="topic-keyword">
+    <div class="topic-name">
+      <h4 style="font-weight:bold"># 전체 사진감</h4>
+    </div>
+    <div class="topic-description">
+      모든 게시글 보기
+
+    </div>
+
+  </div>
+
+
+  <div class="home" id="main">
+    <div class="content-imgs" id="content-imgs">
+
+
+
+    </div>
+
+  </div>
+</div>
+
+
+  <script type="text/javascript">
+  var count = 0;
+  var requestFlag = false;
+
+  $('.back-icon').click(function(){
+     window.history.back();
+   })
+
+  $(window).scroll(function() {
+    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+      //console.log("scroll");
+
+      if(requestFlag){
+        requestFlag = false;
+        loadData();
+      }
+    }
+  });
+
+
+  $(document).ready(function() {
+    var resultObject = JSON.parse(`<%-postingJson%>`);
+    var postingObject = resultObject.postingObject;
+
+    console.log(postingObject);
+
+    if( postingObject === null){
+
+    }else{
+      for(var idx = 0; idx < <%= postingNum %>; idx++){
+        //console.log("image load");
+        count++;
+
+        $("#content-imgs").append('<div class="square" id="square"><div class="content" id="content"><a href="/user/photo/' + postingObject[idx].id + '"><img src="' + postingObject[idx].thumbnailPath + '"></a></div></div>');
+        $('img').load(function(){
+          var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
+          $(this).addClass(imgClass);
+        });
+      }
+
+      requestFlag = true;
+    }
+  });
+
+
+
+  function loadData(){
+    const idxNum = 9;
+
+    $.ajax({
+      type: "GET",
+      url: "/admin/posting/" + count + "/" + idxNum,
+      dataType: "json",
+      success: function (response) {
+        var postingObject = response.postingObject;
+
+        if(postingObject){
+          for(var i = 0; i < postingObject.length; i++){
+            count++;
+            $("#content-imgs").append('<div class="square" id="square"><div class="content" id="content"><a href="/user/photo/' + postingObject[i].id + '"><img src="' + postingObject[i].thumbnailPath + '"></a></div></div>');
+            $('img').load(function(){
+              var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
+              $(this).addClass(imgClass);
+            });
+          }
+
+          requestFlag = true;
+        }else{
+          requestFlag = false;
+        }
+      }
+    });
+  }
+
+  </script>
+</body>
+</html>

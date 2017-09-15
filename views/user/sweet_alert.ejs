@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head-alert.ejs %>
+</head>
+<body>
+
+  <script>
+    var buttonNum = "<%=alertObject.buttonNum%>";
+    var type = "<%=alertObject.type%>";
+    var content = "<%=alertObject.content%>";
+    var cancelCheck = false;
+    var closeCheck = true;
+    var confirmName = "<b><%=alertObject.confirmName%></b>";
+    var confirmUrl = "<%=alertObject.confirmUrl%>";
+    var cancelName = "";
+    var cancelUrl = "";
+
+    if(buttonNum === 2){
+      cancelCheck = true;
+      cancelName = "<%=alertObject.cancelName%>";
+      cancelUrl = "<%=alertObject.cancelUrl%>";
+
+      swal({
+        html: content,
+        type: type,
+        showCancelButton: cancelCheck,
+        showCloseButton: closeCheck,
+        cancelButtonColor: '#d8d8d8',
+        confirmButtonColor: '#33C3F0',
+        confirmButtonText: confirmName,
+        cancelButtonText: cancelName,
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        reverseButtons: true ,
+        focusCancel: false
+      }).then(function () {
+        setTimeout( function (){
+            window.location.href = confirmUrl;
+        }, 10);
+      }, function (dismiss) {
+        setTimeout( function (){
+            window.location.href = cancelUrl;
+        }, 10);
+      })
+    }else if(buttonNum === 1){
+      swal({
+        html: content,
+        type: type,
+        showCancelButton: cancelCheck,
+        showCloseButton: closeCheck,
+        confirmButtonColor: '#33C3F0',
+        confirmButtonText: confirmName,
+        confirmButtonClass: 'btn btn-success',
+        reverseButtons: true ,
+        focusCancel: false
+      }).then(function () {
+        setTimeout( function (){
+            window.location.href = confirmUrl;
+        }, 10);
+      });
+    }
+
+  </script>
+</body>
+</html>

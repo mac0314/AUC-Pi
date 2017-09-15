@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <% include ./partial/head-alert.ejs %>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  </head>
+  <body>
+    <script>
+      swal({
+        html: "존재하지 않는 페이지입니다.",
+        type: "error",
+        showCancelButton: false,
+        showCloseButton: false,
+        confirmButtonColor: '#33C3F0',
+        timer: 1000
+      }).then(
+        function () {
+            window.location.href = "/user/main";
+      },
+      function(dismiss){
+        if(dismiss ==='timer'){
+          window.location.href = "/user/main";
+
+        }
+      }
+    );
+    </script>
+  </body>
+</html>

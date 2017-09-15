@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head-alert.ejs %>
+</head>
+<body>
+  <script>
+    swal({
+      html: "로그인에 실패하였습니다. 다시 시도해주세요.",
+      type: "error",
+      showCancelButton: false,
+      showCloseButton: true,
+      confirmButtonColor: '#33C3F0',
+      confirmButtonText: '<b>확인</b>',
+      confirmButtonClass: 'btn btn-success',
+      reverseButtons: true ,
+      focusCancel: false
+    }).then(function () {
+      setTimeout( function (){
+          window.location.href = "/user/signin";
+      }, 10);
+    });
+  </script>
+</body>
+</html>

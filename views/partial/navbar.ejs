@@ -1,0 +1,32 @@
+<div class="navbar">
+    <ul class="nav-ul">
+        <li><a class="nav-repository" href="/user/repository">나의 일상</a></li>
+        <li><a class="nav-notification" href="/user/notification">알림</a></li>
+        <li><a class="nav-main" href="/user/main">오늘의 키워드</a></li>
+        <li><a class="nav-topics" href="/user/topics/list">키워드 목록</a></li>
+    </ul>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+  $.ajax({
+      url:'/pipet/user/notification/check',
+      type:'GET',
+      contentType: "application/json; charset=utf-8",
+      dataType   : "json",
+      data:null,
+      async:true,
+      cache:false,
+      processData:false,
+      success: function (response){
+          //console.log(response);
+
+          if(response.todoCheck){
+            $('.nav-ul>li:nth-child(2)').append('<div class="red-circle"></div>');
+          }else{
+            $('.nav-ul>li:nth-child(2)').find('.red-circle').remove();
+          }
+
+      }
+  });
+});
+</script>

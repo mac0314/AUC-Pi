@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head-alert.ejs %>
+
+</head>
+<body>
+
+
+  <script>
+  var topicName = "<%=topicEncoded%>"
+  var topicDescription = "<%=topic.description%>"
+  var topicTime = "<%=topic.time%>"
+  String.prototype.replaceAll = function(org, dest) {
+    return this.split(org).join(dest);
+  }
+
+  topicDescription = topicDescription.replaceAll('&lt;/br&gt;', "<br />")
+  topicDescription = topicDescription.replaceAll('&lt;br /&gt;', "<br />")
+
+  console.log(topicDescription)
+
+    swal({
+      html: "<div style='border-top : 1px solid #d8d8d8; border-bottom: 1px solid #d8d8d8; width:100%; margin: 16px 0 32px 0;padding: 20% 0 20% 0;'>"
+            +"<div style = 'font-weight:bold; font-size:24px; padding-bottom:20px;'>" + "# " + topicName +  "</div>"
+            +"<div style= 'font-size: 15px; line-height: 1.6;'>" +topicDescription+"</div>" + "</div>"
+            +"<div style='font-size:16px;'> 다른 사람의 관점이 궁금하다면<br><b>일상을 추출해주세요</b></div>",
+      showCancelButton: true,
+
+      cancelButtonColor: '#d8d8d8',
+      confirmButtonColor: '#33C3F0',
+      confirmButtonText: '<b>추출</b>',
+      cancelButtonText: '취소',
+      confirmButtonClass: 'btn btn-success',
+      cancelButtonClass: 'btn btn-danger',
+      reverseButtons: true ,
+      focusCancel: false
+    }).then(function () {
+      setTimeout( function (){
+          window.location.href = "/user/posting/<%=topicEncoded%>";
+      }, 10);
+    }, function (dismiss) {
+      setTimeout( function (){
+          window.location.href = "/user/topics/list";
+      }, 10);
+    })
+
+  </script>
+</body>
+</html>

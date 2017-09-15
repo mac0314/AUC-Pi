@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<% include ../partial/head.ejs %>
+</script>
+</head>
+<body>
+  <div class="notification mobile">
+    <div class="header">
+      <% include ../partial/title-image.ejs %>
+      <% include ../partial/navbar.ejs %>
+    </div>
+    <div class="noti-list">
+      <div class="noti-banner"></div>
+      <div class="noti-all">
+        <div class="noti-title">
+          알림
+        </div>
+        <ul class="noti-ulist">
+        </ul>
+      </div>
+    </div>
+    <div class="footer" id="main-fot" style="background-color: #353840 !important;">
+      <% include ../partial/footer.ejs %>
+    </div>
+
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      console.log(<%notificationJson%>);
+      <% if(notificationJson != null){ %>
+        <% var notificationList = JSON.parse(notificationJson); %>
+
+        <% var unreadNum = totalNum - readNum; %>
+        <% for(var i=0; i< notificationList.length; i++){ %>
+          <% if(i < unreadNum) { %>
+            $(".noti-ulist").append('<li class="unread"><a class ="photo-link link<%-[i]%>" href="#"><div class="noti-content"><div class="noti-img-square"><div class="noti-img-content img<%-[i]%>"></div></div><div class="noti-body"><span class="noti-text text<%-[i]%>"></span> <span class="noti-time time<%-[i]%>"></span></div></div></a></li>')
+          <% }else{ %>
+            $(".noti-ulist").append('<li><a class ="photo-link link<%-[i]%>" href="#"><div class="noti-content"><div class="noti-img-square"><div class="noti-img-content img<%-[i]%>"></div></div><div class="noti-body"><span class="noti-text text<%-[i]%>"></span> <span class="noti-time time<%-[i]%>"></span></div></div></a></li>')
+          <% } %>
+
+
+          // 리스트 레이아웃 그리기
+          $(".link<%-[i]%>").attr("href","/user/photo/<%-notificationList[i].postingId%>/current/topics/<%-notificationList[i].topicName%>")
+          // 사진링크 넣기
+          $(".img<%-[i]%>").append('<img src="<%-notificationList[i].thumbnailPath%>">')
+          // 이미지 넣기
+          <% if (notificationList[i].ownerCheck) { %>
+          $(".text<%-[i]%>").append('회원님의 <b>사진</b>에 누군가 댓글을 남겼습니다 : '+  '"<%-notificationList[i].content%>"')
+          <% }else{ %>
+          $(".text<%-[i]%>").append('회원님이 <b>관심 있는 사진</b>에 누군가 댓글을 남겼습니다 : '+  '"<%-notificationList[i].content%>"')
+          <% } %>
+          // 댓글 내용 넣기
+          $(".time<%-[i]%>").append('<%-notificationList[i].time%>')
+          $('img').load(function(){
+            var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
+            $(this).addClass(imgClass);
+          });
+        <% } %>
+      <% }else{ %>
+        $(".noti-title").detach();
+        $(".noti-all").append('<div class="noti-empty"><img src="/images/empty-noti.svg"/></div>')
+      <% } %>
+
+
+
+    });
+</script>
+</body>
+</html>
