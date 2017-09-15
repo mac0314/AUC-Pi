@@ -99,6 +99,7 @@ gitignore/
 uploads/
 tmp/
 temp/
+audio/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

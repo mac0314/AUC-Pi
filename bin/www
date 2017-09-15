@@ -16,6 +16,8 @@ var util = require('util');
 var config = require('config.json')('./config/config.json');
 var xmlbuilder = require('xmlbuilder');
 
+var request = require('request');
+
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser();
 
@@ -54,7 +56,7 @@ if(cluster.isMaster) {
      * Get port from environment and store in Express.
      */
 
-    var port = normalizePort(process.env.PORT || '3000');
+    var port = normalizePort(process.env.PORT || '30001');
     app.set('port', port);
 
     /**
