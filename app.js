@@ -54,6 +54,8 @@ app.use( morgan('dev', {stream: accessLogStream}));
 // routes module
 var index = require('./routes/web/index');
 
+var fileAPI = require('./routes/api/index');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -69,6 +71,9 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // Web page route
 app.use('/', index);
+
+// API
+app.use('/api', fileAPI);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
